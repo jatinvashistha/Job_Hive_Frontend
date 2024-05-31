@@ -50,6 +50,7 @@ const Login = () => {
                     isClosable: true,
                 });
                await  dispatch(loadProfile());
+                  window.location.reload();
                navigate('/')
             } else {
                 toast({
