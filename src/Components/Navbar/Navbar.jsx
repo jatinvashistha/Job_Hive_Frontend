@@ -19,7 +19,7 @@ const Navbar = () => {
       await  logout()
         await dispatch(loadProfile());
         navigate('/login')
-   
+     window.location.reload();
 
 
     }
