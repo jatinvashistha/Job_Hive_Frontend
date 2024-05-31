@@ -49,6 +49,7 @@ const Login = () => {
                     duration: 3000,
                     isClosable: true,
                 });
+               await  dispatch(loadProfile());
                navigate('/')
             } else {
                 toast({
