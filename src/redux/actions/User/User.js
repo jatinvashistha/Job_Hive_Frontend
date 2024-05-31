@@ -1,0 +1,94 @@
+import axios from 'axios'
+import Cookies from 'js-cookie'
+import { MAIN_URL } from '../../../URLS/config'
+import { loadUserFailure, loadUserRequest, loadUserSuccess } from '../../reducers/User/User';
+export const login = async (details) => {
+    try {
+      const { email, password, role } = details;
+  const res =       await axios.post(`${MAIN_URL}/user/login`, {
+            email,password,role
+  },{
+            headers:{
+                'Content-type': 'application/json',
+            },
+            withCredentials:true,
+        }
+      )
+      
+
+      return res.data
+        
+    }
+    catch (e) {
+        console.log("the error in login is ",e)
+    }
+
+
+}
+export const register = async (options) => {
+  try {
+      const { email, password, role, name, phone } = options;
+       const headers = {
+         "Content-Type": "application/json",
+           "Sec-Fetch-Mode": "navigate",
+           "Sec-Fetch-Site": "cross-site",
+       };
+    const response = await axios.post(`${MAIN_URL}/user/register`, {
+      email,
+      password,
+      role,
+      name,
+      phone,
+    },
+        headers
+    );
+    return response.data; 
+  } catch (error) {
+    console.error("Error in register:", error);
+  
+  }
+};
+export const profileUpdated = async (options) => {
+  try {
+   
+    
+  const res =   await axios.put(`${MAIN_URL}/user/update`, options
+    )
+    return res.data
+    
+  } catch (error) {
+    console.error("Error in register:", error);
+  
+  }
+};
+export const logout = async (options) => {
+  try {
+   
+    
+    const res = await axios.get(`${MAIN_URL}/user/logout`, {
+    withCredentials : true
+  }
+    )
+    return res.data
+    
+  } catch (error) {
+    console.error("Error in register:", error);
+  
+  }
+};
+export const loadProfile = (options ) =>async (dispatch)  =>  {
+  try {
+    dispatch(loadUserRequest());
+  const data = await axios.get(`${MAIN_URL}/user/profile`, {
+    withCredentials: true,
+  });
+    console.log(data,"the data is" );
+
+    dispatch(loadUserSuccess(data?.data?.user))
+    
+
+  } catch (e) {
+    console.log("the error is ", e);
+    dispatch(loadUserFailure(e.message))
+  }
+}
