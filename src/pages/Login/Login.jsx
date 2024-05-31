@@ -50,8 +50,9 @@ const Login = () => {
                     isClosable: true,
                 });
                await  dispatch(loadProfile());
+                navigate('/')
                   window.location.reload();
-               navigate('/')
+               
             } else {
                 toast({
                     title: 'Login failed',
