@@ -2,11 +2,14 @@
 import axios from 'axios';
 import { MAIN_URL } from '../../../URLS/config';
 import { getAllJobsRequest, getAllJobsSuccess, getMyJobsRequest, getMyJobsSuccess } from '../../reducers/Job/Job';
+const token = localStorage.getItem("token");
 export const getAllJobs  = (options ) =>async (dispatch)  => {
   try {
     dispatch(getAllJobsRequest());
 
-    const res = await axios.get(`${MAIN_URL}/job/alljobs`, {
+    const res = await axios.put(`${MAIN_URL}/job/alljobs`, {
+      token
+    },{
       withCredentials : true
     });
 
@@ -18,10 +21,38 @@ export const getAllJobs  = (options ) =>async (dispatch)  => {
 };
 export const postJob = async(options) => {
   try {
+    const {
+      title,
+      description,
+      category,
+      city,
+      location,
+      fixedSalary,
+      expired,
+      country,
+      salaryFrom,
+      salaryTo
+    } = options;
    
-    const res = await axios.post(`${MAIN_URL}/job/postjob`, options, {
-      withCredentials: true,
-    }); 
+    const res = await axios.post(
+      `${MAIN_URL}/job/postjob`,
+      {
+        title,
+        description,
+        category,
+        city,
+        location,
+        fixedSalary,
+        expired,
+        country,
+        salaryFrom,
+        salaryTo,
+        token,
+      },
+      {
+        withCredentials: true,
+      }
+    ); 
     
 return res.data
   } catch (e) {
@@ -32,7 +63,9 @@ return res.data
 export const getMyJobs = (options) => async (dispatch) => {
   try {
     dispatch(getMyJobsRequest());
-    const { data } = await axios.get(`${MAIN_URL}/job/myjobs`, {
+    const { data } = await axios.put(`${MAIN_URL}/job/myjobs`, {
+      token
+    } ,{
       withCredentials : true
     });
     dispatch(getMyJobsSuccess(data.jobs))
@@ -45,9 +78,30 @@ export const getMyJobs = (options) => async (dispatch) => {
 };
 export const updateJob = async (options) => {
   try {
-    console.log(options)
+     const {
+       title,
+       description,
+       category,
+       city,
+       location,
+       fixedSalary,
+       expired,
+       country,
+       salaryFrom,
+       salaryTo,
+     } = options;
+   
     const res =
-      await axios.put(`${MAIN_URL}/job/update/${options.jobId}`, options, {
+      await axios.put(`${MAIN_URL}/job/update/${options.jobId}`, { title,
+       description,
+       category,
+       city,
+       location,
+       fixedSalary,
+       expired,
+       country,
+       salaryFrom,
+       salaryTo,token}, {
        withCredentials: true,
      });
      return res.data;
@@ -61,7 +115,9 @@ export const updateJob = async (options) => {
 export const getSingleJob =  async (id) => {
   try {
 
- const data = await axios.get(`${MAIN_URL}/job/${id}`, {
+    const data = await axios.put(`${MAIN_URL}/job/${id}`, {
+   token
+ },{
    withCredentials: true,
  });
     
@@ -71,7 +127,9 @@ export const getSingleJob =  async (id) => {
 };
 export const deleteJob = async (id) => {
   try {
-    const data = await axios.delete(`${MAIN_URL}/job/${id}`, {
+    const data = await axios.put(`${MAIN_URL}/job/${id}`, {
+      token
+    },{
       withCredentials : true
     });
 
