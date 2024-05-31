@@ -2,22 +2,16 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 import { MAIN_URL } from '../../../URLS/config'
 import { loadUserFailure, loadUserRequest, loadUserSuccess } from '../../reducers/User/User';
+const token = localStorage.getItem("token");
 export const login = async (details) => {
     try {
       const { email, password, role } = details;
   const res =       await axios.post(`${MAIN_URL}/user/login`, {
             email,password,role
-  },{
-            headers:{
-                'Content-type': 'application/json',
-            },
-            withCredentials:true,
-        }
-      )
-      
-
+  })
+      localStorage.setItem("token", res.data.token);
+        Cookies.set("token", res.data.token, { expires: 7 }); 
       return res.data
-        
     }
     catch (e) {
         console.log("the error in login is ",e)
@@ -50,9 +44,11 @@ export const register = async (options) => {
 };
 export const profileUpdated = async (options) => {
   try {
-   
+
     
-  const res =   await axios.put(`${MAIN_URL}/user/update`, options
+    const res = await axios.put(`${MAIN_URL}/user/update`, { token, options }, {
+    withCredentials : true
+  }
     )
     return res.data
     
@@ -63,9 +59,10 @@ export const profileUpdated = async (options) => {
 };
 export const logout = async (options) => {
   try {
-   
-    
-    const res = await axios.get(`${MAIN_URL}/user/logout`, {
+    localStorage.removeItem("token");
+    const res = await axios.put(`${MAIN_URL}/user/logout`, {
+      token
+    }, {
     withCredentials : true
   }
     )
@@ -79,10 +76,12 @@ export const logout = async (options) => {
 export const loadProfile = (options ) =>async (dispatch)  =>  {
   try {
     dispatch(loadUserRequest());
-  const data = await axios.get(`${MAIN_URL}/user/profile`, {
+    const data = await axios.put(`${MAIN_URL}/user/profile`, {
+    token
+  },{
     withCredentials: true,
   });
-    console.log(data,"the data is" );
+  
 
     dispatch(loadUserSuccess(data?.data?.user))
     
